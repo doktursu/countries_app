@@ -71,23 +71,28 @@ var doStuff = function(countries){
     // Find bordering countries
     var borders = country.borders;
 
-    var borderingCountries = [];
+    if (borders[0] !== undefined) {
 
-    for (var i = 0; i < countries.length; i++) {
-      if(borders.includes(countries[i].alpha3Code)){
-        borderingCountries.push(countries[i]);
+      var borderingCountries = [];
+
+      for (var i = 0; i < countries.length; i++) {
+        if(borders.includes(countries[i].alpha3Code)){
+          borderingCountries.push(countries[i]);
+        }
+      };
+
+      var div = document.getElementById('country-div');
+      var border = document.createElement('h3');
+      border.innerText = 'Bordering Countries:';
+      div.appendChild(border);
+
+      for (country of borderingCountries) {
+        var view = new CountryView(country);
+        view.renderName(div);
       }
-    };
-
-    var div = document.getElementById('country-div');
-    var border = document.createElement('h3');
-    border.innerText = 'Bordering Countries:';
-    div.appendChild(border);
-
-    for (country of borderingCountries) {
-      var view = new CountryView(country);
-      view.renderName(div);
     }
+
+
   }
   
 
