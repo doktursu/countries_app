@@ -1,4 +1,6 @@
 var CountryView = function(country){
+  this.country = country;
+
   this.name = document.createElement('h2');
   this.name.innerText = country.name;
   
@@ -17,6 +19,28 @@ var CountryView = function(country){
   this.renderName = function(parent){
     parent.appendChild(this.name);
   };
+
+  this.renderTableRow = function(parent, attrs){
+    var tr = document.createElement('tr');
+    for(prop in this.country){
+      if(attrs.includes(prop)){
+        var td = document.createElement('td');
+        td.innerText = country[prop];
+        tr.appendChild(td);
+      }
+    }
+    parent.appendChild(tr);
+  };
+};
+
+CountryView.renderTableRowTh = function(parent, attrs){
+  var tr = document.createElement('tr');
+  attrs.forEach(function(prop){
+    var th = document.createElement('th');
+    th.innerText = prop;
+    tr.appendChild(th);
+  });
+  parent.appendChild(tr);
 };
 
 var CountriesList = function(countries){
@@ -34,7 +58,7 @@ var CountriesList = function(countries){
       select.appendChild(option);
     }
   };
-  this.borderingCountries = function(country){
+  this.bordering = function(country){
     return this.countries.reduce(function(arr, entry){
       if(country.borders.includes(entry.alpha3Code))
         arr.push(entry);
@@ -65,13 +89,20 @@ var LocalCountriesList = function(key){
 
 
 var doStuff = function(countries){
-  console.log('got the data');
-  console.log(countries[0].name);
 
-  var list = new CountriesList(countries);
+  var countries = new CountriesList(countries);
+
+  var table = document.getElementById('countries-table');
+  // countries.renderList(table);
+  var attrs = ['name', 'population', 'capital'];
+  CountryView.renderTableRowTh(table, attrs);
+  countries.countries.forEach(function(country){
+    var view = new CountryView(country);
+    view.renderTableRow(table, attrs);
+  });
 
   var form = document.getElementById('countries-form');
-  list.renderSelect(form);
+  countries.renderSelect(form);
   var button = document.createElement('input');
   button.id = 'countries-submit';
   button.type = 'button';
@@ -79,57 +110,52 @@ var doStuff = function(countries){
   form.appendChild(button);
 
   button.onclick = function(){
-    var country = JSON.parse(document.getElementById('countries-select').value);
+    var myCountry = JSON.parse(document.getElementById('countries-select').value);
 
-    var view = new CountryView(country);
-    var div = document.getElementById('country-div');
-    while(div.firstChild){
-      div.removeChild(div.firstChild);
+    var view = new CountryView(myCountry);
+    var parent = document.getElementById('country-div');
+    while(parent.firstChild){
+      parent.removeChild(parent.firstChild);
     }
-    view.render(div);
+    view.render(parent);
 
     var localList = new LocalCountriesList('countryAppList');
-    localList.addCountry(country);
+    localList.addCountry(myCountry);
 
     
-    // Find bordering countries
-    if (country.borders.length > 0) {
+    // Render bordering countries
+    if (myCountry.borders.length > 0) {
 
-      var borderingCountries = list.borderingCountries(country);
+      var borderingCountries = countries.bordering(myCountry);
 
-      var div = document.getElementById('country-div');
       var border = document.createElement('h3');
       border.innerText = 'Bordering Countries:';
-      div.appendChild(border);
+      parent.appendChild(border);
 
       for (country of borderingCountries) {
         var view = new CountryView(country);
-        view.renderName(div);
+        view.renderName(parent);
       }
     }
-
-
-  }
-  
-
-  }
-
-  window.onload = function(){
-    console.log('App started');
-
-    var url = 'https://restcountries.eu/rest/v1/all';
-    var request = new XMLHttpRequest();
-
-    request.open('GET', url);
-    request.onload = function(){
-      if(request.status === 200){
-        doStuff(JSON.parse(request.responseText));
-      }
-    };
-
-    request.send(null);
-
   };
+};
+
+window.onload = function(){
+  console.log('App started');
+
+  var url = 'https://restcountries.eu/rest/v1/all';
+  var request = new XMLHttpRequest();
+
+  request.open('GET', url);
+  request.onload = function(){
+    if(request.status === 200){
+      doStuff(JSON.parse(request.responseText));
+    }
+  };
+
+  request.send(null);
+
+};
 
 
 
