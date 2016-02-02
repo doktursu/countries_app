@@ -13,72 +13,102 @@ var CountryView = function(country){
     parent.appendChild(this.capital);
     parent.appendChild(this.population);
   };
-};
 
-
-window.onload = function(){
-  console.log('App started');
-
-  var url = 'https://restcountries.eu/rest/v1/all';
-  var request = new XMLHttpRequest();
-
-  request.open('GET', url);
-  request.onload = function(){
-    if(request.status === 200){
-      console.log('got the data');
-
-      var countries = JSON.parse(request.responseText);
-      console.log(countries[0].name);
-
-      var form = document.getElementById('countries-form');
-
-      var selectList = document.createElement('select');
-      selectList.id = 'countries-select';
-      form.appendChild(selectList);
-
-      for (var i = 0; i < countries.length; i++) {
-        var option = document.createElement('option');
-        option.value = JSON.stringify(countries[i]);
-        option.text = countries[i].name;
-        selectList.appendChild(option);
-      }
-
-      var button = document.createElement('input');
-      button.id = 'countries-submit';
-      button.type = 'button';
-      button.value = 'Go';
-      form.appendChild(button);
-
-      button.onclick = function(){
-        var country = JSON.parse(document.getElementById('countries-select').value);
-        console.log(country);
-        var view = new CountryView(country);
-        console.log(view);
-
-        var div = document.getElementById('country-div');
-
-        while(div.firstChild){
-          div.removeChild(div.firstChild);
-        }
-
-        view.render(div);
-
-        var countryAppList = JSON.parse(localStorage.getItem('countryAppList')) || [];
-
-        if (!countryAppList.map(function(country){
-            return country.name;
-          }).includes(country.name)){
-            countryAppList.push(country);
-            localStorage.setItem('countryAppList', JSON.stringify(countryAppList));
-        }
-      };
-
-    }
+  this.renderName = function(parent){
+    parent.appendChild(this.name);
   };
-
-  request.send(null);
-
 };
+
+
+var doStuff = function(countries){
+  console.log('got the data');
+  console.log(countries[0].name);
+
+//form
+  var form = document.getElementById('countries-form');
+
+  var selectList = document.createElement('select');
+  selectList.id = 'countries-select';
+  form.appendChild(selectList);
+
+  //form
+
+  //options
+  for (var i = 0; i < countries.length; i++) {
+    var option = document.createElement('option');
+    option.value = JSON.stringify(countries[i]);
+    option.text = countries[i].name;
+    selectList.appendChild(option);
+  }
+  //options
+
+  //button
+  var button = document.createElement('input');
+  button.id = 'countries-submit';
+  button.type = 'button';
+  button.value = 'Go';
+  form.appendChild(button);
+  //button
+
+  button.onclick = function(){
+    var country = JSON.parse(document.getElementById('countries-select').value);
+
+    var view = new CountryView(country);
+    var div = document.getElementById('country-div');
+    while(div.firstChild){
+      div.removeChild(div.firstChild);
+    }
+    view.render(div);
+
+    var countryAppList = JSON.parse(localStorage.getItem('countryAppList')) || [];
+
+    if (!countryAppList.map(function(country){
+      return country.name;
+    }).includes(country.name)){
+      countryAppList.push(country);
+      localStorage.setItem('countryAppList', JSON.stringify(countryAppList));
+    }
+    // Find bordering countries
+    var borders = country.borders;
+
+    var borderingCountries = [];
+
+    for (var i = 0; i < countries.length; i++) {
+      if(borders.includes(countries[i].alpha3Code)){
+        borderingCountries.push(countries[i]);
+      }
+    };
+
+    var div = document.getElementById('country-div');
+    var border = document.createElement('h3');
+    border.innerText = 'Bordering Countries:';
+    div.appendChild(border);
+
+    for (country of borderingCountries) {
+      var view = new CountryView(country);
+      view.renderName(div);
+    }
+  }
+  
+
+  }
+
+  window.onload = function(){
+    console.log('App started');
+
+    var url = 'https://restcountries.eu/rest/v1/all';
+    var request = new XMLHttpRequest();
+
+    request.open('GET', url);
+    request.onload = function(){
+      if(request.status === 200){
+        doStuff(JSON.parse(request.responseText));
+      }
+    };
+
+    request.send(null);
+
+  };
 
 
 
