@@ -19,36 +19,64 @@ var CountryView = function(country){
   };
 };
 
+var CountriesList = function(countries){
+  this.countries = countries;
+  this.renderSelect = function(parent){
+    var select = document.createElement('select');
+    select.id = 'countries-select';
+    select.setAttribute('placeholder', 'choose one');
+    parent.appendChild(select);
+
+    for (country of this.countries) {
+      var option = document.createElement('option');
+      option.value = JSON.stringify(country);
+      option.text = country.name;
+      select.appendChild(option);
+    }
+  };
+  this.borderingCountries = function(country){
+    return this.countries.reduce(function(arr, entry){
+      if(country.borders.includes(entry.alpha3Code))
+        arr.push(entry);
+      return arr;
+    }, []);
+  };
+
+};
+
+var LocalCountriesList = function(key){
+  this.key = key;
+  this.getCountries = function(){
+    return JSON.parse(localStorage.getItem(this.key)) || [];
+  };
+  this.hasCountry = function(country){
+    return this.getCountries().map(function(entry){
+      return entry.name;
+    }).includes(country.name);
+  };
+  this.addCountry = function(country){
+    var countries = this.getCountries();
+    if(!this.hasCountry(country)){
+      countries.push(country);
+      localStorage.setItem(this.key, JSON.stringify(countries));
+    }
+  };
+};
+
 
 var doStuff = function(countries){
   console.log('got the data');
   console.log(countries[0].name);
 
-//form
+  var list = new CountriesList(countries);
+
   var form = document.getElementById('countries-form');
-
-  var selectList = document.createElement('select');
-  selectList.id = 'countries-select';
-  form.appendChild(selectList);
-
-  //form
-
-  //options
-  for (var i = 0; i < countries.length; i++) {
-    var option = document.createElement('option');
-    option.value = JSON.stringify(countries[i]);
-    option.text = countries[i].name;
-    selectList.appendChild(option);
-  }
-  //options
-
-  //button
+  list.renderSelect(form);
   var button = document.createElement('input');
   button.id = 'countries-submit';
   button.type = 'button';
   button.value = 'Go';
   form.appendChild(button);
-  //button
 
   button.onclick = function(){
     var country = JSON.parse(document.getElementById('countries-select').value);
@@ -60,26 +88,14 @@ var doStuff = function(countries){
     }
     view.render(div);
 
-    var countryAppList = JSON.parse(localStorage.getItem('countryAppList')) || [];
+    var localList = new LocalCountriesList('countryAppList');
+    localList.addCountry(country);
 
-    if (!countryAppList.map(function(country){
-      return country.name;
-    }).includes(country.name)){
-      countryAppList.push(country);
-      localStorage.setItem('countryAppList', JSON.stringify(countryAppList));
-    }
+    
     // Find bordering countries
-    var borders = country.borders;
+    if (country.borders.length > 0) {
 
-    if (borders[0] !== undefined) {
-
-      var borderingCountries = [];
-
-      for (var i = 0; i < countries.length; i++) {
-        if(borders.includes(countries[i].alpha3Code)){
-          borderingCountries.push(countries[i]);
-        }
-      };
+      var borderingCountries = list.borderingCountries(country);
 
       var div = document.getElementById('country-div');
       var border = document.createElement('h3');
