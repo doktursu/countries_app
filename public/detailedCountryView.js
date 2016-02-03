@@ -1,0 +1,4 @@
+var DetailedCountryView = function(country){
+  
+
+}

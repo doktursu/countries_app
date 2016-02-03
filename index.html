@@ -3,6 +3,11 @@
   <head>
     <title>Startpoint</title>
     <link rel='stylesheet' type='text/css' href='main.css'>
+    <script src="https://maps.googleapis.com/maps/api/js"></script>
+    <script src="countriesTableView.js"></script>
+    <script src="countriesFilterView.js"></script>
+    <script src="detailedCountryView.js"></script>
+    <script src="map.js"></script>
     <script src='app.js'></script>
   </head>
   <body>
@@ -17,6 +22,8 @@
     <input type="text" id="filter-attr" placeholder="Filter by language. en fr zh">
     <input type="button" id="filter-submit" size="40" value="filter">
   </form>
+
+  <div id="map"></div>
 
   <div id="country-div">
 

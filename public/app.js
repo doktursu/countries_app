@@ -31,6 +31,11 @@ var CountryView = function(country){
     }
     parent.appendChild(tr);
   };
+  this.setMap = function(){
+    console.log(this.country);
+    var centre = {lat: this.country.latlng[0], lng: this.country.latlng[1]};
+    new Map(centre);
+  };
 };
 
 CountryView.renderTableRowTh = function(parent, attrs){
@@ -99,12 +104,6 @@ var CountriesList = function(countries){
     return results;
   };
 
-  this.sanitizeOptions = function(options){
-    var index = options.indexOf('');
-    if(index !== -1)
-      options[index] = 'Other';
-  };
-
 };
 
 var LocalCountriesList = function(key){
@@ -150,13 +149,10 @@ var doStuff = function(countries){
 
 
   var table = document.getElementById('countries-table');
-  // countries.renderList(table);
-  var attrs = ['name', 'capital', 'population'];
-  CountryView.renderTableRowTh(table, attrs);
-  countries.countries.forEach(function(country){
-    var view = new CountryView(country);
-    view.renderTableRow(table, attrs);
-  });
+  var props = ['name', 'capital', 'population'];
+
+  var tableView = new countriesTableView(table);
+  tableView.display(countries.countries, props);
 
   countries.renderSelect();
   // var button = document.createElement('input');
@@ -170,6 +166,9 @@ var doStuff = function(countries){
     var myCountry = JSON.parse(document.getElementById('countries-select').value);
 
     var view = new CountryView(myCountry);
+
+    view.setMap();
+
     var parent = document.getElementById('country-div');
     while(parent.firstChild){
       parent.removeChild(parent.firstChild);
@@ -206,6 +205,11 @@ var doStuff = function(countries){
     }
     // countries.renderList(table);
     var attrs = ['name', 'languages'];
+    var table = document.getElementById('countries-table');
+    var props = ['name', 'capital', 'population'];
+
+    var tableView = new countriesTableView(table);
+    tableView.display(countries.countries, props);
     CountryView.renderTableRowTh(table, attrs);
 
     console.log(countries);
