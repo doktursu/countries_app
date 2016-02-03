@@ -112,6 +112,15 @@ var doStuff = function(countries){
   // Filter Test
   console.log(countries.filter('region', 'Asia'));
   console.log(countries.unique('region'));
+  //Create options for select
+  var regions = countries.unique('region');
+  var select = document.getElementById('filter-region-select');
+  for(region of regions){
+    var option = document.createElement('option');
+    option.value = region;
+    option.text = region;
+    select.appendChild(option);
+  }
 
 
   var table = document.getElementById('countries-table');
