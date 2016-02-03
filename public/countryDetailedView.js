@@ -1,5 +1,6 @@
 var CountryDetailedView = function(element){
   this.element = element;
+  this.onClick = undefined;
 };
 
 CountryDetailedView.prototype = {
@@ -11,14 +12,21 @@ CountryDetailedView.prototype = {
   },
   displayBordering: function(countries){
     var bordering = this.element.querySelector('#country-bordering');
+    bordering.innerHTML = '';
     for(country of countries){
-      var button = document.createElement('button');
-      button.innerText = country.name;
-      //Not Working
-      button.onClick = function(){
-        this.display(country);
-      };
+      var button = this.borderButton(country);
       bordering.appendChild(button);
     }
+  },
+  borderButton: function(country){
+    var button = document.createElement('button');
+    button.innerText = country.name;
+    //Not Working
+    button.addEventListener('click', function(){
+      console.log('clicked', country.name);
+      this.onClick(country);
+    }.bind(this), false);
+    return button;
   }
+
 };

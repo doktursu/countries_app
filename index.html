@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>Startpoint</title>
+    <link rel='stylesheet' type='text/css' href='normalize.css'>
     <link rel='stylesheet' type='text/css' href='main.css'>
     <script src="https://maps.googleapis.com/maps/api/js"></script>
     <script src="regionsSelectView.js"></script>
@@ -10,32 +11,39 @@
     <script src="countriesFilterView.js"></script>
     <script src="countryDetailedView.js"></script>
     <script src="countriesList.js"></script>
+    <script src="geoLocator.js"></script>
     <script src="map.js"></script>
     <script src='app.js'></script>
   </head>
   <body>
-  <select id="regions-select">
-    <option id="region-option" selected="selected">Choose a Region</option>
-  </select>
 
-  <select id="countries-select">
-  </select>
+  <div id="map" class="map"></div><!--
 
-  <form id="countries-filter-form">
-    <input type="text" id="filter-attr" placeholder="Filter by language. en fr zh">
-    <input type="button" id="filter-submit" size="40" value="filter">
-  </form>
+  --><div id="non-map" class="group">
+    <select id="regions-select">
+      <option id="region-option" selected="selected">Choose a Region</option>
+    </select>
 
-  <div id="map"></div>
+    <select id="countries-select">
+    </select>
 
-  <div id="country-detailed">
-    <p></p>
-    <p></p>
-    <p></p>
-    <div id="country-bordering">
+    <form id="countries-filter-form">
+      <input type="text" id="filter-attr" placeholder="Filter by language. en fr zh">
+      <input type="button" id="filter-submit" size="40" value="filter">
+    </form>
+
+    <div id="country-detailed">
+      <p></p>
+      <p></p>
+      <p></p>
+      <div id="country-bordering">
+      </div>
     </div>
-  </div>
 
+    <button id="myLocation">My Location</button>
+
+
+  </div>
   <table id="countries-table">
     
   </table>

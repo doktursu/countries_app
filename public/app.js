@@ -227,6 +227,15 @@ window.onload = function(){
   var countriesSelectView = new CountriesSelectView(document.querySelector('#countries-select'));
   var countryDetailedView = new CountryDetailedView(document.querySelector('#country-detailed'));
   var countriesTableView = new CountriesTableView(document.querySelector('#countries-table'));
+  var centre = {lat: 40.712784, lng: -74.005941};
+  var map = new Map(centre);
+
+  var geoLocator = new GeoLocator(map);
+  geoLocator.onClick = function(){
+    this.setMapCentre();
+  }
+
+  geoLocator.setMapCentre();
 
 
   regionsSelectView.onChange = function(region){
@@ -234,9 +243,24 @@ window.onload = function(){
     countriesSelectView.populate(countries);
   };
 
+  countryDetailedView.onClick = function(country){
+    //display that country
+    countryDetailedView.display(country);
+    var centre = {lat: country.latlng[0], lng: country.latlng[1]};
+    map.setCentre(centre);
+    map.addInfoWindow(centre, country);
+    if(country.borders.length > 0){
+      var bordering = world.bordering(country);
+      countryDetailedView.displayBordering(bordering);
+    }
+  };
+
   countriesSelectView.onChange = function(country){
     //display that country
     countryDetailedView.display(country);
+    var centre = {lat: country.latlng[0], lng: country.latlng[1]};
+    map.setCentre(centre);
+    map.addInfoWindow(centre, country);
     if(country.borders.length > 0){
       var bordering = world.bordering(country);
       countryDetailedView.displayBordering(bordering);

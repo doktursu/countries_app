@@ -1,4 +1,33 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+table {
+  display: inline-block;
+  overflow: hidden;
+}
+
 #map {
-  height: 200px;
-  width: 200px;
+  display:inline-block;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  vertical-align: top;
+  width: 60%;
+}
+
+#non-map {
+  display:inline-block;
+  height: 100vh;
+  vertical-align: top;
+  width: 40%;
+}
+
+.group:after {
+  content: "";
+  display: table;
+  clear: both;
 }
