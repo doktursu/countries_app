@@ -4,14 +4,17 @@
     <title>Startpoint</title>
     <link rel='stylesheet' type='text/css' href='main.css'>
     <script src="https://maps.googleapis.com/maps/api/js"></script>
+    <script src="regionsSelectView.js"></script>
+    <script src="countriesSelectView.js"></script>
     <script src="countriesTableView.js"></script>
     <script src="countriesFilterView.js"></script>
-    <script src="detailedCountryView.js"></script>
+    <script src="countryDetailedView.js"></script>
+    <script src="countriesList.js"></script>
     <script src="map.js"></script>
     <script src='app.js'></script>
   </head>
   <body>
-  <select id="region-select">
+  <select id="regions-select">
     <option id="region-option" selected="selected">Choose a Region</option>
   </select>
 
@@ -25,14 +28,17 @@
 
   <div id="map"></div>
 
-  <div id="country-div">
-
+  <div id="country-detailed">
+    <p></p>
+    <p></p>
+    <p></p>
+    <div id="country-bordering">
+    </div>
   </div>
+
   <table id="countries-table">
     
   </table>
-  <div id="country-div">
 
-  </div>
   </body>
 </html>
