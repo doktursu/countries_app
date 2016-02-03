@@ -75,6 +75,14 @@ var CountriesList = function(countries){
     }, []);
   };
 
+  this.unique = function(attr){
+    return this.countries.reduce(function(arr, country){
+      if(!arr.includes(country[attr]))
+        arr.push(country[attr]);
+      return arr;
+    }, []);
+  };
+
 };
 
 var LocalCountriesList = function(key){
@@ -100,6 +108,11 @@ var LocalCountriesList = function(key){
 var doStuff = function(countries){
 
   var countries = new CountriesList(countries);
+
+  // Filter Test
+  console.log(countries.filter('region', 'Asia'));
+  console.log(countries.unique('region'));
+
 
   var table = document.getElementById('countries-table');
   // countries.renderList(table);
