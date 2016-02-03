@@ -43,15 +43,21 @@ CountryView.renderTableRowTh = function(parent, attrs){
   parent.appendChild(tr);
 };
 
+var removeChildren = function(parent){
+  while(parent.firstChild){
+    parent.removeChild(parent.firstChild);
+  }
+};
+
 var CountriesList = function(countries){
   this.countries = countries;
-  this.renderSelect = function(parent){
-    var select = document.createElement('select');
-    select.id = 'countries-select';
-    select.setAttribute('placeholder', 'choose one');
-    parent.appendChild(select);
 
-    for (country of this.countries) {
+  this.renderSelect = function(countries){
+    var countries = countries || this.countries;
+    var select = document.getElementById('countries-select');
+    removeChildren(select);
+
+    for (country of countries) {
       var option = document.createElement('option');
       option.value = JSON.stringify(country);
       option.text = country.name;
@@ -66,21 +72,37 @@ var CountriesList = function(countries){
     }, []);
   };
 
-  this.filter = function(attr, value){
-    return this.countries.reduce(function(arr, country){
-      if(country[attr].includes(value)){
-        arr.push(country);
-      }
-      return arr;
-    }, []);
+  this.filter = function(prop, value){
+    if(value != false) {
+      return this.countries.reduce(function(arr, country){
+        if(country[prop].includes(value)){
+          arr.push(country);
+        }
+        return arr;
+      }, []);
+    }else{
+      return this.countries.reduce(function(arr, country){
+        if(country[prop] == false){
+          arr.push(country);
+        }
+        return arr;
+      }, []);
+    }
   };
 
-  this.unique = function(attr){
-    return this.countries.reduce(function(arr, country){
-      if(!arr.includes(country[attr]))
-        arr.push(country[attr]);
+  this.unique = function(prop){
+    var results =  this.countries.reduce(function(arr, country){
+      if(!arr.includes(country[prop]))
+        arr.push(country[prop]);
       return arr;
     }, []);
+    return results;
+  };
+
+  this.sanitizeOptions = function(options){
+    var index = options.indexOf('');
+    if(index !== -1)
+      options[index] = 'Other';
   };
 
 };
@@ -114,13 +136,17 @@ var doStuff = function(countries){
   console.log(countries.unique('region'));
   //Create options for select
   var regions = countries.unique('region');
-  var select = document.getElementById('filter-region-select');
+  var regionSelect = document.getElementById('region-select');
   for(region of regions){
     var option = document.createElement('option');
     option.value = region;
-    option.text = region;
-    select.appendChild(option);
+    option.text = region ? region : 'Other';
+    regionSelect.appendChild(option);
   }
+  regionSelect.onchange = function(){
+    var region = document.getElementById('region-select').value;
+    countries.renderSelect(countries.filter('region', region));
+  };
 
 
   var table = document.getElementById('countries-table');
@@ -132,15 +158,15 @@ var doStuff = function(countries){
     view.renderTableRow(table, attrs);
   });
 
-  var form = document.getElementById('countries-form');
-  countries.renderSelect(form);
-  var button = document.createElement('input');
-  button.id = 'countries-submit';
-  button.type = 'button';
-  button.value = 'Go';
-  form.appendChild(button);
+  countries.renderSelect();
+  // var button = document.createElement('input');
+  // button.id = 'countries-submit';
+  // button.type = 'button';
+  // button.value = 'Go';
+  // form.appendChild(button);
 
-  button.onclick = function(){
+  var select = document.getElementById('countries-select');
+  select.onchange = function(){
     var myCountry = JSON.parse(document.getElementById('countries-select').value);
 
     var view = new CountryView(myCountry);
