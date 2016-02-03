@@ -235,6 +235,8 @@ window.onload = function(){
   }
   geoLocator.setMapCentre();
 
+  var visited = new CountryCount();
+
   function updateCurrentCountry(country){
     countryDetailedView.display(country);
     var centre = {lat: country.latlng[0], lng: country.latlng[1]};
@@ -244,6 +246,7 @@ window.onload = function(){
       var bordering = world.bordering(country);
       countryDetailedView.displayBordering(bordering);
     }
+    visited.update(country);
   }
 
   regionsSelectView.onChange = function(region){
