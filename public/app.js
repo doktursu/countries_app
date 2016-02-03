@@ -229,14 +229,22 @@ window.onload = function(){
   var countriesTableView = new CountriesTableView(document.querySelector('#countries-table'));
   var centre = {lat: 40.712784, lng: -74.005941};
   var map = new Map(centre);
-
   var geoLocator = new GeoLocator(map);
   geoLocator.onClick = function(){
     this.setMapCentre();
   }
-
   geoLocator.setMapCentre();
 
+  function updateCurrentCountry(country){
+    countryDetailedView.display(country);
+    var centre = {lat: country.latlng[0], lng: country.latlng[1]};
+    map.setCentre(centre);
+    map.addInfoWindow(centre, country);
+    if(country.borders.length > 0){
+      var bordering = world.bordering(country);
+      countryDetailedView.displayBordering(bordering);
+    }
+  }
 
   regionsSelectView.onChange = function(region){
     var countries = world.filter('region', region);
@@ -244,28 +252,20 @@ window.onload = function(){
   };
 
   countryDetailedView.onClick = function(country){
-    //display that country
-    countryDetailedView.display(country);
-    var centre = {lat: country.latlng[0], lng: country.latlng[1]};
-    map.setCentre(centre);
-    map.addInfoWindow(centre, country);
-    if(country.borders.length > 0){
-      var bordering = world.bordering(country);
-      countryDetailedView.displayBordering(bordering);
-    }
+    updateCurrentCountry(country);
+  };
+  countriesSelectView.onChange = function(country){
+    updateCurrentCountry(country);
   };
 
-  countriesSelectView.onChange = function(country){
-    //display that country
-    countryDetailedView.display(country);
-    var centre = {lat: country.latlng[0], lng: country.latlng[1]};
-    map.setCentre(centre);
-    map.addInfoWindow(centre, country);
-    if(country.borders.length > 0){
-      var bordering = world.bordering(country);
-      countryDetailedView.displayBordering(bordering);
-    }
-  };
+  google.maps.event.addListener(map.googleMap, 'click', function(e){
+    var lat = e.latLng.lat();
+    var lng = e.latLng.lng();
+    var position = [lat, lng];
+    var nearestCountry = world.nearestCountry(position);
+    console.log('nearest', nearestCountry);
+    updateCurrentCountry(nearestCountry);
+  });
 
 
   var world = new CountriesList();

@@ -16,14 +16,14 @@ table {
   left: 0;
   bottom: 0;
   vertical-align: top;
-  width: 60%;
+  width: 75%;
 }
 
 #non-map {
   display:inline-block;
   height: 100vh;
   vertical-align: top;
-  width: 40%;
+  width: 25%;
 }
 
 .group:after {

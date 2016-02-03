@@ -3,6 +3,11 @@ var Map = function(latLng){
     center: latLng,
     zoom: 5
   });
+  // google.maps.event.addListener(this.googleMap, 'click', function(e){
+  //   var lat = e.latLng.lat();
+  //   var lng = e.latLng.lng();
+  //   console.log('lat:', lat, 'lng:', lng);
+  // });
 };
 
 Map.prototype = {

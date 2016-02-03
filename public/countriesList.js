@@ -48,5 +48,14 @@ CountriesList.prototype = {
         arr.push(country);
       return arr;
     }, []);
+  },
+  nearestCountry: function(latLng){
+    return this.countries.reduce(function(nearest, country){
+      var nearestDistance = Math.sqrt(((nearest.latlng[0] - latLng[0]) * (nearest.latlng[0] - latLng[0])) + ((nearest.latlng[1] - latLng[1]) * (nearest.latlng[1] - latLng[1])));
+      var currentDistance = Math.sqrt(((country.latlng[0] - latLng[0]) * (country.latlng[0] - latLng[0])) + ((country.latlng[1] - latLng[1]) * (country.latlng[1] - latLng[1])));
+      if(currentDistance < nearestDistance)
+        nearest = country;
+      return nearest;
+    });
   }
 };
