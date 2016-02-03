@@ -103,7 +103,7 @@ var doStuff = function(countries){
 
   var table = document.getElementById('countries-table');
   // countries.renderList(table);
-  var attrs = ['name', 'population', 'capital'];
+  var attrs = ['name', 'capital', 'population'];
   CountryView.renderTableRowTh(table, attrs);
   countries.countries.forEach(function(country){
     var view = new CountryView(country);
