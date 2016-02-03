@@ -66,6 +66,15 @@ var CountriesList = function(countries){
     }, []);
   };
 
+  this.filter = function(attr, value){
+    return this.countries.reduce(function(arr, country){
+      if(country[attr].includes(value)){
+        arr.push(country);
+      }
+      return arr;
+    }, []);
+  };
+
 };
 
 var LocalCountriesList = function(key){
@@ -137,6 +146,25 @@ var doStuff = function(countries){
         view.renderName(parent);
       }
     }
+  };
+
+  var filter = document.getElementById('filter-submit');
+  filter.onclick = function(){
+    var value = document.getElementById('filter-attr').value;
+
+    var table = document.getElementById('countries-table');
+    while(table.firstChild){
+      table.removeChild(table.firstChild);
+    }
+    // countries.renderList(table);
+    var attrs = ['name', 'languages'];
+    CountryView.renderTableRowTh(table, attrs);
+
+    console.log(countries);
+    countries.filter('languages', value).forEach(function(country){
+      var view = new CountryView(country);
+      view.renderTableRow(table, attrs);
+    });
   };
 };
 
