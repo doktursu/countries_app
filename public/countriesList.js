@@ -1,5 +1,5 @@
 var CountriesList = function(){
-  this.countres = [];
+  this.countries = [];
   this.onUpdate = undefined;
 };
 
@@ -11,6 +11,7 @@ CountriesList.prototype = {
     request.onload = function(){
       if(request.status === 200){
         var countries = JSON.parse(request.responseText);
+        console.log(countries.length);
         this.countries = countries;
         this.onUpdate(countries);
       }
