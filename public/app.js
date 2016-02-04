@@ -235,7 +235,9 @@ window.onload = function(){
   }
   geoLocator.setMapCentre();
 
-  var visited = new CountryCount();
+  var visited = new CountryCount('countries-clicked');
+  map.populateWithMarkers(visited.getCountries());
+  visited.display();
 
   function updateCurrentCountry(country){
     countryDetailedView.display(country);
@@ -246,7 +248,7 @@ window.onload = function(){
       var bordering = world.bordering(country);
       countryDetailedView.displayBordering(bordering);
     }
-    visited.update(country);
+    visited.addCountry(country);
   }
 
   regionsSelectView.onChange = function(region){

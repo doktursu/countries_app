@@ -30,5 +30,11 @@ Map.prototype = {
       });
       infoWindow.open(this.map, marker);
     });
+  },
+  populateWithMarkers: function(countries){
+    for(country of countries){
+      var centre = {lat: country.latlng[0], lng: country.latlng[1]};
+      this.addInfoWindow(centre, country);
+    }
   }
 }
